@@ -9,7 +9,7 @@
 import UIKit
 import CoreLocation
 
-class ViewController: UIViewController, CLLocationManagerDelegate {
+class ViewController: UIViewController {
 
     let locationManager = CLLocationManager()
     
@@ -52,8 +52,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         if authorizationStatus != .authorizedWhenInUse && authorizationStatus != .authorizedAlways {
             // User has not authorized access to location information.
             NSLog("girish: user not authorized")
-            // XXX: to make settings->privacy->(anki helper) appear
-            locationManager.startUpdatingLocation()
             return
         }
         // Do not start services that aren't available.
@@ -63,9 +61,15 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
             return
         }
         locationManager.startUpdatingLocation()
-        NSLog("requested loc")
+        //NSLog("requested loc")
     }
 
+    
+}
+
+// girish
+extension ViewController: CLLocationManagerDelegate {
+    
     func locationManager(_ manager: CLLocationManager,  didUpdateLocations locations: [CLLocation]) {
         //let lastLocation = locations.last!
         NSLog("event")
@@ -73,7 +77,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         NSLog("after")
         // Do something with the location.
     }
-
+    
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         NSLog("failed with error")
         if let error = error as? CLError, error.code == .denied {
@@ -84,4 +88,3 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         // Notify the user of any errors.
     }
 }
-

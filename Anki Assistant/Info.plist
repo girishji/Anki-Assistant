@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>I need location</string>
+	<string>Location is needed for background task</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>I need location</string>
+	<string>Location is needed for background task</string>
 	<key>LSApplicationCategoryType</key>
 	<string></string>
 	<key>CFBundleDevelopmentRegion</key>
