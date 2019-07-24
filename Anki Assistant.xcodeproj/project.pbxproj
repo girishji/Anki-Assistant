@@ -13,6 +13,7 @@
 		E30A484C22E902C10014A527 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E30A484B22E902C10014A527 /* Assets.xcassets */; };
 		E30A484F22E902C10014A527 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E30A484D22E902C10014A527 /* LaunchScreen.storyboard */; };
 		E30A485A22E902C10014A527 /* Anki_AssistantTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E30A485922E902C10014A527 /* Anki_AssistantTests.swift */; };
+		E30A486622E91A380014A527 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E30A486522E91A380014A527 /* CoreLocation.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +37,7 @@
 		E30A485522E902C10014A527 /* Anki AssistantTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Anki AssistantTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E30A485922E902C10014A527 /* Anki_AssistantTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Anki_AssistantTests.swift; sourceTree = "<group>"; };
 		E30A485B22E902C10014A527 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E30A486522E91A380014A527 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,6 +45,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E30A486622E91A380014A527 /* CoreLocation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -62,6 +65,7 @@
 				E30A484322E902BE0014A527 /* Anki Assistant */,
 				E30A485822E902C10014A527 /* Anki AssistantTests */,
 				E30A484222E902BE0014A527 /* Products */,
+				E30A486422E91A380014A527 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -94,6 +98,14 @@
 				E30A485B22E902C10014A527 /* Info.plist */,
 			);
 			path = "Anki AssistantTests";
+			sourceTree = "<group>";
+		};
+		E30A486422E91A380014A527 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E30A486522E91A380014A527 /* CoreLocation.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -146,6 +158,11 @@
 				TargetAttributes = {
 					E30A484022E902BE0014A527 = {
 						CreatedOnToolsVersion = 10.3;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					E30A485422E902C10014A527 = {
 						CreatedOnToolsVersion = 10.3;
@@ -363,6 +380,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 5B956CC42A;
 				INFOPLIST_FILE = "Anki Assistant/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -381,6 +399,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 5B956CC42A;
 				INFOPLIST_FILE = "Anki Assistant/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
