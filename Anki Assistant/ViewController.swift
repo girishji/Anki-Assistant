@@ -12,13 +12,6 @@ import CoreLocation
 class ViewController: UIViewController {
 
     var locationManager: CLLocationManager?
-    let queue = DispatchQueue(label: "com.girish.ankiassistant")
-    // cannot read toggleSwitch.isOn from async thread, without causing thread backtrace
-    // and error in nslog, although after 15 seconds everything will start running fine again.
-    // But if you use dispatchque of main loop to read toggleSwitch, OS gives control back to
-    // main thread and background task stops.
-    // To avoid this, use a local variable and connect it to toggleSwitch state
-    var stopBackgroundTask = true
     
     //MARK: Properties
    
@@ -31,13 +24,11 @@ class ViewController: UIViewController {
         if sender.isOn {
             configureLocationManager()
             startReceivingLocationChanges()
-            stopBackgroundTask = false
-            //toggleSwitch.setOn(false, animated: true)
+             //toggleSwitch.setOn(false, animated: true)
             //toggleSwitch
-        } //else { // switch is OFF
-          //  locationManager?.stopUpdatingLocation()
-          //  stopBackgroundTask = true
-        //}
+        } else { // switch is OFF
+            locationManager?.stopUpdatingLocation()
+         }
     }
     
     
@@ -52,8 +43,10 @@ class ViewController: UIViewController {
     func configureLocationManager() {
         if locationManager == nil {
             locationManager = CLLocationManager()
-            locationManager?.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-            locationManager?.distanceFilter = 100000000.0  // In meters.
+            //locationManager?.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+            //locationManager?.distanceFilter = 100000000.0  // In meters.
+            // only 'navigation' option lets it run in background (not sure how reliable)
+            locationManager?.desiredAccuracy = kCLLocationAccuracyBestForNavigation
             locationManager?.delegate = self
             locationManager?.requestWhenInUseAuthorization()
             locationManager?.requestAlwaysAuthorization()
@@ -86,23 +79,19 @@ extension ViewController: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager,  didUpdateLocations locations: [CLLocation]) {
         //let lastLocation = locations.last!
-        queue.async {
-            let MaxDuration = 12 * 60 * 60 // 12 hours in seconds
-            for _ in 0..<MaxDuration {
-                if !self.stopBackgroundTask {
-                    NSLog("event")
-                    sleep(1)
-                    NSLog("after")
-                    // stopping and starting updatenotification does not deliver events
-                    // when app is in background. So, use for loop with sleep
-                    //manager.stopUpdatingLocation()
-                    //manager.startUpdatingLocation()
-                } else {
-                    manager.stopUpdatingLocation()
-                    return
-                }
-            }
+        //let MaxDuration = 12 * 60 * 60 // 12 hours in seconds
+        //for _ in 0..<MaxDuration {
+        if toggleSwitch.isOn {
+            NSLog("event")
+            sleep(1)
+            NSLog("after")
+            // stopping and starting updatenotification to make it deliver another event
+            manager.startUpdatingLocation()
+        } else {
+            manager.stopUpdatingLocation()
+            // return
         }
+        //}
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
@@ -112,7 +101,6 @@ extension ViewController: CLLocationManagerDelegate {
             manager.stopUpdatingLocation()
             return
         }
-        // Notify the user of any errors.
     }
     
     // girish
