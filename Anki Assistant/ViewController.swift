@@ -11,21 +11,27 @@ import CoreLocation
 
 class ViewController: UIViewController {
 
-    let locationManager = CLLocationManager()
+    var locationManager: CLLocationManager?
+    var timerStopped = true
     
     //MARK: Properties
-    
-    
+   
+    @IBOutlet weak var statusLabel: UILabel!
     
     //MARK: Actions
     
     @IBAction func switchValueChanged(_ sender: UISwitch, forEvent event: UIEvent) {
         if sender.isOn {
-            NSLog("on")
-            //startReceivingVisitChanges()
-            startReceivingLocationChanges()
-        } else {
-            NSLog("off")
+            timerStopped = false
+            if locationManager == nil {
+                locationManager = CLLocationManager()
+                startReceivingLocationChanges()
+            } else {
+                locationManager?.startUpdatingLocation()
+            }
+        } else { // switch is OFF
+            timerStopped = true
+            locationManager?.stopUpdatingLocation()
         }
     }
     
@@ -33,20 +39,20 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        
+        statusLabel.text = "Anki Assistant"
     }
     
     
     // girish
-    
+    // to fake background task, use location manager
     func startReceivingLocationChanges() {
 
         // Configure and start the service.
-        locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
-        locationManager.distanceFilter = 100.0  // In meters.
-        locationManager.delegate = self
-        locationManager.requestWhenInUseAuthorization()
-        locationManager.requestAlwaysAuthorization()
+        locationManager!.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+        locationManager!.distanceFilter = 100000000.0  // In meters.
+        locationManager!.delegate = self
+        locationManager!.requestWhenInUseAuthorization()
+        locationManager!.requestAlwaysAuthorization()
 
         let authorizationStatus = CLLocationManager.authorizationStatus()
         if authorizationStatus != .authorizedWhenInUse && authorizationStatus != .authorizedAlways {
@@ -60,11 +66,8 @@ class ViewController: UIViewController {
             NSLog("girish: location not enabled")
             return
         }
-        locationManager.startUpdatingLocation()
-        //NSLog("requested loc")
+        locationManager!.startUpdatingLocation()
     }
-
-    
 }
 
 // girish
@@ -72,10 +75,19 @@ extension ViewController: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager,  didUpdateLocations locations: [CLLocation]) {
         //let lastLocation = locations.last!
-        NSLog("event")
-        sleep(1)
-        NSLog("after")
-        // Do something with the location.
+        //let MaxDuration = 24 * 60 * 60 // one day in seconds
+        //for _ in 0..<MaxDuration {
+        if !timerStopped {
+            NSLog("event")
+            sleep(1)
+            NSLog("after")
+            // stopping and starting is better than a loop with a sleep as it will give
+            // this thread time to process switch on/off events from UI
+            manager.stopUpdatingLocation()
+            manager.startUpdatingLocation()
+        } else {
+            manager.stopUpdatingLocation()
+        }
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
@@ -86,5 +98,11 @@ extension ViewController: CLLocationManagerDelegate {
             return
         }
         // Notify the user of any errors.
+    }
+    
+    // girish
+    // make the font of top status bar white
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
     }
 }
