@@ -80,7 +80,7 @@ extension ViewController: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager,  didUpdateLocations locations: [CLLocation]) {
         //let lastLocation = locations.last!
-        let MaxDuration = 12 * 60 * 60 // 12 hours in seconds
+        let MaxDuration = 3 * 60 * 60 // hours in seconds
         for _ in 0..<MaxDuration {
             //if toggleSwitch.isOn {
             NSLog("event")
