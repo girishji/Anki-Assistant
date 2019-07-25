@@ -35,7 +35,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
         // girish
         NSLog("foreground")
-        //let viewController = self.window?.rootViewController as! ViewController
+        // just in case:
+        let viewController = self.window?.rootViewController as! ViewController
+        viewController.toggleSwitch.isEnabled = true
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {

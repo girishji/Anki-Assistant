@@ -25,10 +25,12 @@ class ViewController: UIViewController {
             configureLocationManager()
             startReceivingLocationChanges()
              //toggleSwitch.setOn(false, animated: true)
-            //toggleSwitch
-        } else { // switch is OFF
-            locationManager?.stopUpdatingLocation()
-         }
+            toggleSwitch.isEnabled = false
+            // when main thread gets occupied in sleep loop, UI will not respond. Just
+            // wait for 12 hours loop to expire.
+        } //else { // switch is OFF
+          //  locationManager?.stopUpdatingLocation()
+         //}
     }
     
     
@@ -36,6 +38,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         statusLabel.text = "Anki Assistant"
+        toggleSwitch.isEnabled = true
     }
     
     // girish
@@ -43,10 +46,8 @@ class ViewController: UIViewController {
     func configureLocationManager() {
         if locationManager == nil {
             locationManager = CLLocationManager()
-            //locationManager?.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-            //locationManager?.distanceFilter = 100000000.0  // In meters.
-            // only 'navigation' option lets it run in background (not sure how reliable)
-            locationManager?.desiredAccuracy = kCLLocationAccuracyBestForNavigation
+            locationManager?.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+            locationManager?.distanceFilter = 100000000.0  // In meters.
             locationManager?.delegate = self
             locationManager?.requestWhenInUseAuthorization()
             locationManager?.requestAlwaysAuthorization()
@@ -79,19 +80,15 @@ extension ViewController: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager,  didUpdateLocations locations: [CLLocation]) {
         //let lastLocation = locations.last!
-        //let MaxDuration = 12 * 60 * 60 // 12 hours in seconds
-        //for _ in 0..<MaxDuration {
-        if toggleSwitch.isOn {
+        let MaxDuration = 12 * 60 * 60 // 12 hours in seconds
+        for _ in 0..<MaxDuration {
+            //if toggleSwitch.isOn {
             NSLog("event")
             sleep(1)
             NSLog("after")
-            // stopping and starting updatenotification to make it deliver another event
-            manager.startUpdatingLocation()
-        } else {
             manager.stopUpdatingLocation()
-            // return
         }
-        //}
+        toggleSwitch.isEnabled = true
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
@@ -139,3 +136,6 @@ extension ViewController: CLLocationManagerDelegate {
 //
 // asych queues don't work when app is backgrounded
 //
+// even navigation option in desiredAccuracy does not work
+//
+// stopping and starting updatenotification to make it deliver another event
