@@ -55,6 +55,7 @@
                     </view>
                     <connections>
                         <outlet property="statusLabel" destination="QMH-cw-56Z" id="erz-Wz-hLd"/>
+                        <outlet property="toggleSwitch" destination="zqF-M5-Jge" id="NTM-AE-9xE"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
