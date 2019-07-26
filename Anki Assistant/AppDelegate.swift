@@ -39,7 +39,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let viewController = self.window?.rootViewController as! ViewController
         viewController.toggleSwitch.isEnabled = true
         //
-        PasteboardHelper.transform()
+        //PasteboardHelper.transform()
+        PasteboardHelper.printPasteboard()
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
