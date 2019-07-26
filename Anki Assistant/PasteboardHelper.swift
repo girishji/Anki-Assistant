@@ -39,15 +39,15 @@ class PasteboardHelper {
         //
         // HTML tags pl and gb are polish and english, see <pl...> and <gb style...>
         
-        let WebkitData = "com.apple.WebKit.custom-pasteboard-data"
+        //let WebkitData = "com.apple.WebKit.custom-pasteboard-data"
         let PublicHTML = "public.html"
-        let PublicRTF = "public.rtf"
-        let PlainText = "public.utf8-plain-text"
-        let FlatRTFD = "com.apple.flat-rtfd"
-        let AppleRTFD = "com.apple.rtfd"
-        let AttrStr = "com.apple.uikit.attributedstring"
+        //let PublicRTF = "public.rtf"
+        //let PlainText = "public.utf8-plain-text"
+        //let FlatRTFD = "com.apple.flat-rtfd"
+        //let AppleRTFD = "com.apple.rtfd"
+        //let AttrStr = "com.apple.uikit.attributedstring"
         let WebArchive = "Apple Web Archive pasteboard type"
-        let RichContent = "iOS rich content paste pasteboard type"
+        //let RichContent = "iOS rich content paste pasteboard type"
 
         // In UIPasteboard, both value() and data() successfully return a value
         //    for all keys.
@@ -57,7 +57,8 @@ class PasteboardHelper {
 
         if let pData = pasteBoard.data(forPasteboardType: PublicHTML) {
             if let decodedString = String(data: pData, encoding: String.Encoding.utf8) {
-                logLongString(str: decodedString)
+                //logLongString(str: decodedString)
+                NSLog("Pasteboard contains an item for formatting")
                 if let formatted = formatForAnki(input: decodedString) {
                     //NSLog(formatted)
                     if let webArch = getPListXMLArchive(content: formatted) {
@@ -66,7 +67,7 @@ class PasteboardHelper {
                 }
             }
         }
-        //printPasteboard()
+        printPasteboard()
     }
     
     
@@ -123,15 +124,12 @@ class PasteboardHelper {
     static func printPasteboard() {
         
         let pasteBoard = UIPasteboard.general
+        NSLog("Printing pasteboard contents:")
         for item in pasteBoard.types {
             NSLog(item)
             if let pValue = pasteBoard.value(forPasteboardType: item) {
                 let t = type(of: pValue as Any)
                 NSLog("Value of '\(item)' is of type: '\(t)'")
-                //if (htmltext is NSString) {
-                //    NSLog("girish, here 2 nsstring")
-                //    NSLog((htmltext as! NSString) as String)
-                //}
             }
             
             if let pData = pasteBoard.data(forPasteboardType: item) {
@@ -139,7 +137,7 @@ class PasteboardHelper {
                 if let decodedString = String(data: pData, encoding: String.Encoding.utf8) {
                     NSLog(decodedString)
                     NSLog("length of decoded string: " + String(decodedString.count))
-                    NSLog("description: " + pData.description)
+                    //NSLog("description: " + pData.description)
                 } else {
                     NSLog("girish decoding failed for '\(item)'")
                 }

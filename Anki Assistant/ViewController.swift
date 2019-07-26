@@ -13,6 +13,7 @@ class ViewController: UIViewController {
 
     var locationManager: CLLocationManager?
     let DefaultLabel = "Anki Assistant"
+    var backgroundTaskID: UIBackgroundTaskIdentifier?
     
     //MARK: Properties
    
@@ -82,25 +83,42 @@ extension ViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager,  didUpdateLocations locations: [CLLocation]) {
         //let lastLocation = locations.last!
         manager.stopUpdatingLocation()
-        let MaxDuration = 3 * 60 * 60 // 3 hours in seconds
-        for _ in 0..<MaxDuration {
-            //if toggleSwitch.isOn {
-            NSLog("event")
-            //PasteboardHelper.transform()
-            sleep(1)
-            PasteboardHelper.printPasteboard()
         
-            //NSLog("after")
-            // does not update UI because this app is single threaded and
-            //   it is occupied
-            //let remaining = MaxDuration - tick
-            //let minutes = remaining / 60
-            //let seconds = remaining % 60
-            //let hours = remaining % 3600
-            //statusLabel.text = "\(hours) : \(minutes) : \(seconds) remaining"
+        // Perform the task on a background queue.
+        DispatchQueue.global().async {
+            // Request the task assertion and save the ID.
+            self.backgroundTaskID = UIApplication.shared.beginBackgroundTask (withName: "Finish Network Tasks") {
+                // End the task if time expires.
+                UIApplication.shared.endBackgroundTask(self.backgroundTaskID!)
+                self.backgroundTaskID = UIBackgroundTaskIdentifier.invalid
+            }
+            
+            // Send the data synchronously.
+            //self.sendAppDataToServer( data: data)
+            let MaxDuration = 3 * 60 * 60 // in seconds
+            for _ in 0..<MaxDuration {
+                //if toggleSwitch.isOn {
+                NSLog("event")
+                PasteboardHelper.transform()
+                sleep(1)
+                
+                //NSLog("after")
+                // does not update UI because this app is single threaded and
+                //   it is occupied
+                //let remaining = MaxDuration - tick
+                //let minutes = remaining / 60
+                //let seconds = remaining % 60
+                //let hours = remaining % 3600
+                //statusLabel.text = "\(hours) : \(minutes) : \(seconds) remaining"
+            }
+            self.toggleSwitch.isEnabled = true
+            //statusLabel.text = DefaultLabel
+            
+            // End the task assertion.
+            UIApplication.shared.endBackgroundTask(self.backgroundTaskID!)
+            self.backgroundTaskID = UIBackgroundTaskIdentifier.invalid
         }
-        toggleSwitch.isEnabled = true
-        //statusLabel.text = DefaultLabel
+        
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
@@ -119,7 +137,15 @@ extension ViewController: CLLocationManagerDelegate {
     }
 }
 
+
+//
 // girish
+//
+// Busy loop with sleep() does not work. Even when you call PasteboardHelper.transform
+// it is like that never gets called. It prints 0 contents in pastboard (when you
+// copy some text) but after you reinstall app the pasteboard content is there!
+// you can even formate when called outside of busy loop.
+//
 // UIApplication is a singleton
 //                if UIApplication.shared.applicationState == .active {
 //                    NSLog("active")
@@ -151,3 +177,4 @@ extension ViewController: CLLocationManagerDelegate {
 // even navigation option in desiredAccuracy does not work
 //
 // stopping and starting updatenotification to make it deliver another event
+//
