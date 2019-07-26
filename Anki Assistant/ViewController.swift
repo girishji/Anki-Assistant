@@ -12,6 +12,7 @@ import CoreLocation
 class ViewController: UIViewController {
 
     var locationManager: CLLocationManager?
+    let DefaultLabel = "Anki Assistant"
     
     //MARK: Properties
    
@@ -22,12 +23,12 @@ class ViewController: UIViewController {
     
     @IBAction func switchValueChanged(_ sender: UISwitch, forEvent event: UIEvent) {
         if sender.isOn {
-            configureLocationManager()
-            startReceivingLocationChanges()
              //toggleSwitch.setOn(false, animated: true)
             toggleSwitch.isEnabled = false
             // when main thread gets occupied in sleep loop, UI will not respond. Just
-            // wait for 12 hours loop to expire.
+            // wait for 3 hours loop to expire.
+            configureLocationManager()
+            startReceivingLocationChanges()
         } //else { // switch is OFF
           //  locationManager?.stopUpdatingLocation()
          //}
@@ -37,7 +38,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        statusLabel.text = "Anki Assistant"
+        statusLabel.text = DefaultLabel
         toggleSwitch.isEnabled = true
     }
     
@@ -80,15 +81,26 @@ extension ViewController: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager,  didUpdateLocations locations: [CLLocation]) {
         //let lastLocation = locations.last!
-        let MaxDuration = 3 * 60 * 60 // hours in seconds
+        manager.stopUpdatingLocation()
+        let MaxDuration = 3 * 60 * 60 // 3 hours in seconds
         for _ in 0..<MaxDuration {
             //if toggleSwitch.isOn {
             NSLog("event")
+            //PasteboardHelper.transform()
             sleep(1)
-            NSLog("after")
-            manager.stopUpdatingLocation()
+            PasteboardHelper.printPasteboard()
+        
+            //NSLog("after")
+            // does not update UI because this app is single threaded and
+            //   it is occupied
+            //let remaining = MaxDuration - tick
+            //let minutes = remaining / 60
+            //let seconds = remaining % 60
+            //let hours = remaining % 3600
+            //statusLabel.text = "\(hours) : \(minutes) : \(seconds) remaining"
         }
         toggleSwitch.isEnabled = true
+        //statusLabel.text = DefaultLabel
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
